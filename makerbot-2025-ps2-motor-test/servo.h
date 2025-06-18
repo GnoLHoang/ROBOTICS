@@ -29,13 +29,7 @@ void setup() {
 void loop() {
 
   // Blink the LED to notify the test is started
-  for (int i = 0; i < 3; i++) {
-    Serial.println(3 - i);
-    digitalWrite(NOTIFY_LED, HIGH);
-    delay(500);
-    digitalWrite(NOTIFY_LED, LOW);
-    delay(500);
-  }
+
 
     setServo(i, 0); 
 
@@ -55,10 +49,6 @@ void loop() {
     Serial.println("Change to next servo...");
     
     // Blink the LED to notify the test is started
-    digitalWrite(NOTIFY_LED, HIGH);
-    delay(500);
-    digitalWrite(NOTIFY_LED, LOW);
   }
 
-  delay(5000);
 }
