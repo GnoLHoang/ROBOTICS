@@ -1,4 +1,4 @@
-#include <PS2X_lib.h>
+﻿#include <PS2X_lib.h>
 
 PS2X ps2x; // create PS2 Controller Class object
 #define BEBUG_CTRL
@@ -30,14 +30,51 @@ void setupPS2controller()
 }
 bool PS2control()
 {
+  /*
+  * Driving functions
+  */
   int speed = NORM_SPEED;
-  if (ps2x.Button(PSB_R1))
+  if ((ps2x.Button(PSB_L3)) || (ps2x.Button(PSB_R3)))
     speed = TOP_SPEED;
 
   if (ps2x.ButtonPressed(PSB_SELECT))
     driving_mode =! driving_mode;
   
+  /*
+  2 360 servo use L/R1 and L/R2.
+  2 180 servo use A/B/X/Y: ButtonPressed() -> directly move to 180 or 90 degree.
 
+  360 servo uses pulse length to move clockwise and counterclockwise.
+  180 servo uses pulse length to move to a specific angle.
+  setPWM() and writeMicroseconds() are indifferent.
+
+  2 360 servos use channel 2 and 3, for more info refer to servo.h 
+  */
+  if (ps2x.Button(PSB_L1)) // First 360 servo moves counterclockwise
+    setServoUS(SERVO_1_CHANNEL, 1000);
+
+  if (ps2x.Button(PSB_L2)) // First 360 servo moves clockwise
+    setServoUS(SERVO_1_CHANNEL, 2000);
+
+  if (ps2x.Button(PSB_R1)) // Second 360 servo moves counterclockwise
+    setServoUS(SERVO_1_CHANNEL, 1000);
+
+  if (ps2x.Button(PSB_R2)) // Second 360 servo moves clockwise
+    setServoUS(SERVO_1_CHANNEL, 2000);
+    
+  delay(20); // Prevent flooding
+
+  /*
+  Raising mechanism
+  */
+  if (PSB_GREEN)
+  /*
+  Hanging Mechanism
+  */
+
+  /*
+  Robot Movement 
+  */
   int nJoyX = X_JOY_CALIB - ps2x.Analog(PSS_RX); // read x-joystick
   // Serial.println(nJoyX);
   int nJoyY = Y_JOY_CALIB - (driving_mode ? ps2x.Analog(PSS_LY) :ps2x.Analog(PSS_RY)); // read y-joystick

@@ -9,11 +9,13 @@
 
 #include "motors.h"
 #include "PS2_controller.h"
+#include "servo.h"
 
 void setup()
 {
   Serial.begin(115200);
   initMotors();
+  initServos();
   setupPS2controller();
   Serial.println("Done setup!");
 }
