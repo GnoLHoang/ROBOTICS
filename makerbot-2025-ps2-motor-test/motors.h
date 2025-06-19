@@ -18,7 +18,9 @@
 
 //Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
-void setPWMMotors(int c1, int c2, int c3, int c4, int c5, int c6, int c7, int c8)
+void setPWMMotors(
+  int c1 = 0, int c2 = 0, int c3 = 0, int c4 = 0,
+  int c5 = 0, int c6 = 0, int c7 = 0, int c8 = 0)
 {
   char dbg_str[80];
   sprintf(dbg_str, "C1: %d\tC2: %d\tC3: %d\tC4: %d\tC5: %d\tC6: %d\tC7: %d\tC8: %d",

@@ -66,11 +66,24 @@ bool PS2control()
 
   /*
   Raising mechanism
+
+  The DC Motor should be wired to channel 5 and 6
+  The code below "should" only raise the box, swap to channel 6 if not moving correctly
   */
-  if (PSB_GREEN)
+  if (ps2x.Button(PSB_GREEN)) {
+    setPWMMotors(0,0,0,0,2000);
+  }
+  else {
+    setPWMMotors();
+  }
   /*
   Hanging Mechanism
+
+  The geared DC Motor here should be wired to channel 7 and 8
+  The code below should lower the box and pulling the bar down, swap to channel 8 if the gear is not moving correctly
   */
+  
+  // Work in progress 
 
   /*
   Robot Movement 
@@ -86,7 +99,7 @@ bool PS2control()
 
   if(nJoyX == -1 && nJoyY == 0) // in case of lost connection with the wireless controller, only used in VRC2023 PS2 wireless controller 
   {
-    setPWMMotors(0, 0, 0, 0);
+    setPWMMotors();
     return 0;
   }
 
@@ -107,7 +120,8 @@ bool PS2control()
   Serial.print("\t");
   // Serial.println(nMotMixR);
   #endif
-  int c1 = 0, c2 = 0, c3 = 0, c4 = 0;
+  
+  //int c1 = 0, c2 = 0, c3 = 0, c4 = 0;
 
   if (nMotMixR > 0)
   {
