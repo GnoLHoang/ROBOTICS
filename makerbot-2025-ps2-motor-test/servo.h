@@ -1,7 +1,8 @@
 #include <Adafruit_PWMServoDriver.h>
 #include <Wire.h>
+#include "hardware.h"
 
-Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+//Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 #define SERVO_1_CHANNEL 2
 #define SERVO_2_CHANNEL 3
@@ -10,55 +11,33 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 #define SERVO_5_CHANNEL 6
 #define SERVO_6_CHANNEL 7
 
-#define NOTIFY_LED 13
-
-void setServo(uint8_t channel, uint16_t pulse) {
+// Set Servo directly on PWM
+void setServoPWM(uint8_t channel, uint16_t pulse) {
   pwm.setPWM(channel, 0, pulse);
 }
 
-void setup() {
-  Serial.begin(115200);
-  Serial.println("Servo test firmware for MakerBot 2024");
-
-  pwm.begin();
-  pwm.setPWMFreq(50); 
-
-  pinMode(NOTIFY_LED, OUTPUT);
+// Set servo directly on us
+void setServoUS(uint8_t channel, uint16_t microseconds) {
+	pwm.writeMicroseconds(channel, microseconds); // writeMicroseconds function only has 2 arguments
 }
 
-void loop() {
+// Set servo indirectly on angle
+void setServoAngle(uint8_t channel, int angle) {
+  // Constrain angle to 0-180
+  angle = constrain(angle, 0, 180);
 
-  // Blink the LED to notify the test is started
-  for (int i = 0; i < 3; i++) {
-    Serial.println(3 - i);
-    digitalWrite(NOTIFY_LED, HIGH);
-    delay(500);
-    digitalWrite(NOTIFY_LED, LOW);
-    delay(500);
-  }
+  // Map angle to pulse width in s (adjust min/max as needed)
+  int us = map(angle, 0, 180, 1000, 2000);
 
-    setServo(i, 0); 
+  // Convert to PCA9685 ticks
+  int tick = us * 4096 / 20000;
 
-    // Sweep from 0 to 4000 in steps of 100
-    for (int j = 0; j <= 4000; j+= 100) { 
-      Serial.print("Setting servo ");
-      Serial.print(i);
-      Serial.print(" running at ");
-      Serial.println(j);
-      setServo(i, j);
-      delay(300); // Delay 300ms between each step
-    }
+  pwm.setPWM(channel, 0, tick);
+}
 
-    // Set servo to 0 after test
-    setServo(i, 0); 
+void initServos() {
 
-    Serial.println("Change to next servo...");
-    
-    // Blink the LED to notify the test is started
-    digitalWrite(NOTIFY_LED, HIGH);
-    delay(500);
-    digitalWrite(NOTIFY_LED, LOW);
-  }
+  pwm.begin();
+  pwm.setPWMFreq(50);
 
-  delay(5000);
 }
